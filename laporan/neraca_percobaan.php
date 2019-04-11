@@ -26,42 +26,54 @@ if (isset($_SESSION['id_admin']))
 				<th>Kredit</th><th>Debet</th><th> Kredit</th><th>Debet</th><th>Kredit</th>
 			</tr>
 			<?php
-			$query_mutasi=mysql_query("select * from tabel_master order by kode_rekening asc");
-			$total=mysql_fetch_array(mysql_query("select sum(awal_debet) as tot_awal_debet, sum(awal_kredit) as tot_awal_kredit, sum(mut_debet) as tot_mut_debet,  sum(mut_kredit) as tot_mut_kredit,
-								sum(sisa_debet) as tot_sisa_debet, sum(sisa_kredit) as tot_sisa_kredit from tabel_master order by kode_rekening asc"));
+			$query_mutasi = mysql_query("SELECT * FROM tabel_master ORDER BY kode_rekening ASC");
+			$total        = mysql_fetch_array(mysql_query("SELECT SUM(awal_debet) AS tot_awal_debet, SUM(awal_kredit) AS tot_awal_kredit, SUM(mut_debet) AS tot_mut_debet,  SUM(mut_kredit) AS tot_mut_kredit,
+								SUM(sisa_debet) AS tot_sisa_debet, SUM(sisa_kredit) AS tot_sisa_kredit FROM tabel_master ORDER BY kode_rekening ASC"));
 			
-			while($row_mut=mysql_fetch_array($query_mutasi)){
+			while($row_mut = mysql_fetch_array($query_mutasi)){
 			
-				$awal_debet=$row_mut['awal_debet'];
-				$awal_kredit=$row_mut['awal_kredit'];
-				$mutasi_debet=$row_mut['mut_debet'];
-				$mutasi_kredit=$row_mut['mut_kredit'];
-				$sisa_debet=$row_mut['sisa_debet'];
-				$sisa_kredit=$row_mut['sisa_kredit'];
+				$awal_debet    = $row_mut['awal_debet'];
+				$awal_kredit   = $row_mut['awal_kredit'];
+				$mutasi_debet  = $row_mut['mut_debet'];
+				$mutasi_kredit = $row_mut['mut_kredit'];
+				$sisa_debet    = $row_mut['sisa_debet'];
+				$sisa_kredit   = $row_mut['sisa_kredit'];
 			
 				?>
 				<tr>
 					<td><div align="center"><?php echo $row_mut['kode_rekening'];?></div></td>
 					<td><?php echo $row_mut['nama_rekening'];?></td>
 					
-					<td align="right"><?php echo number_format($awal_debet,2,'.',','); ?></td>
-					<td align="right"><?php echo number_format($awal_kredit,2,'.',','); ?></td>	
+					<td align="right"><?php echo number_format($awal_debet,0,'.',','); ?></td>
+					<td align="right"><?php echo number_format($awal_kredit,0,'.',','); ?></td>	
 					
-					<td align="right"><?php echo number_format($mutasi_debet,2,'.',','); ?></td>
-					<td align="right"><?php echo number_format($mutasi_kredit,2,'.',','); ?></td>	
+					<td align="right"><?php echo number_format($mutasi_debet,0,'.',','); ?></td>
+					<td align="right"><?php echo number_format($mutasi_kredit,0,'.',','); ?></td>	
 					
-					<td align="right"><?php echo number_format($sisa_debet,2,'.',','); ?></td>
-					<td align="right"><?php echo number_format($sisa_kredit,2,'.',','); ?></td>					
+					<td align="right"><?php echo number_format($sisa_debet,0,'.',','); ?></td>
+					<td align="right"><?php echo number_format($sisa_kredit,0,'.',','); ?></td>					
 				</tr>
 				<?php
 			}
 			?>
 			<tr>
 				<td colspan="2"><div align="center"><strong>TOTAL TRANSAKSI</strong></div></td>
-				<td><div align="right"><strong><?php echo number_format($total['tot_awal_debet'],2,'.',','); ?></strong></div></td><td><div align="right"><strong><?php echo number_format($total['tot_awal_kredit'],2,'.',','); ?></strong></div></td>
-				<td><div align="right"><strong><?php echo number_format($total['tot_mut_debet'],2,'.',','); ?></strong></div></td><td><div align="right"><strong><?php echo number_format($total['tot_mut_kredit'],2,'.',','); ?></strong></div></td>
-				<td><div align="right"><strong><?php echo number_format($total['tot_sisa_debet'],2,'.',','); ?></strong></div></td>
-				<td><div align="right"><strong><?php echo number_format($total['tot_sisa_kredit'],2,'.',','); ?></strong></div></td>
+				<td>
+					<div align="right"><strong><?php echo number_format($total['tot_awal_debet'],0,'.',','); ?></strong></div>
+				</td>
+				<td>
+					<div align="right"><strong><?php echo number_format($total['tot_awal_kredit'],0,'.',','); ?></strong></div>
+				</td>
+				<td>
+					<div align="right"><strong><?php echo number_format($total['tot_mut_debet'],0,'.',','); ?></strong></div></td>
+				<td>
+					<div align="right"><strong><?php echo number_format($total['tot_mut_kredit'],0,'.',','); ?></strong></div></td>
+				<td>
+					<div align="right"><strong><?php echo number_format($total['tot_sisa_debet'],0,'.',','); ?></strong></div>
+				</td>
+				<td>
+					<div align="right"><strong><?php echo number_format($total['tot_sisa_kredit'],0,'.',','); ?></strong></div>
+				</td>
 			</tr>
 			</table>
 			</p>

@@ -51,42 +51,42 @@ if (isset($_SESSION['id_admin']))
 				
 				if($hapus_neraca_temporial){
 					//Query aktiva LANCAR
-					$query_kas          = mysql_fetch_array(mysql_query("SELECT SUM(sisa_debet) AS kas FROM tabel_master WHERE kode_rekening LIKE '111%'"));
-					$query_bank         = mysql_fetch_array(mysql_query("SELECT SUM(sisa_debet) AS bank FROM tabel_master WHERE kode_rekening LIKE '112%'"));
-					$query_piutang      = mysql_fetch_array(mysql_query("SELECT sum(sisa_debet) AS piutang FROM tabel_master WHERE kode_rekening LIKE '113%'"));
+					$query_kas           = mysql_fetch_array(mysql_query("SELECT SUM(sisa_debet) AS kas FROM tabel_master WHERE kode_rekening LIKE '111%'"));
+					$query_bank          = mysql_fetch_array(mysql_query("SELECT SUM(sisa_debet) AS bank FROM tabel_master WHERE kode_rekening LIKE '112%'"));
+					$query_piutang       = mysql_fetch_array(mysql_query("SELECT sum(sisa_debet) AS piutang FROM tabel_master WHERE kode_rekening LIKE '113%'"));
 					
-					
-					//Array Query
-					$kas             = $query_kas['kas'];
-					$bank            = $query_bank['bank'];
-					$piutang         = $query_piutang['piutang'];
-					
-					
-					
-					//Proses Query
-					//$bank =$bank1+$bank2;
+					//taruh di variabel
+					$kas                 = $query_kas['kas'];
+					$bank                = $query_bank['bank'];
+					$piutang             = $query_piutang['piutang'];
 					
 					//menghitung saldo akhir aktiva lancar
-					$aktiva_lancar = $kas + $bank + $piutang;
+					$aktiva_lancar       = $kas + $bank + $piutang;
+					
 					
 					//Query aktiva TETAP
+					$query_peralatan       = mysql_fetch_array(mysql_query("SELECT sum(sisa_debet) AS peralatan FROM tabel_master WHERE kode_rekening LIKE '114%'"));
+					
+					$peralatan           = $query_peralatan['peralatan'];
+					
 					$query_gedung_mesin  = mysql_fetch_array(mysql_query("SELECT sum(sisa_debet) AS gedung_mesin FROM tabel_master WHERE kode_rekening LIKE '133%'"));
 					
-					//Array Query
+					//taruh di variabel
 					$gedung_mesin  = $query_gedung_mesin['gedung_mesin'];
 					
-					//Perhitungan
-					$aktiva_tetap = $gedung_mesin;
+					//menghitung saldo akhir aktiva tetap
+					$aktiva_tetap = $gedung_mesin + $peralatan;
 			
+					/* Jumlah Aktiva */
 					$jumlah_aktiva = $aktiva_lancar + $aktiva_tetap;
 					
-					//Tahap penginputan Data
-					mysql_query("INSERT INTO tabel_neraca(kode_rekening, nama_rekening) values('0','<b>AKTIVA LANCAR</b>')");
+					/*=============================================TAHAP PENG-INPUTAN DATA=======================================================*/
 					
+					mysql_query("INSERT INTO tabel_neraca(kode_rekening, nama_rekening) values('0','<b>AKTIVA LANCAR</b>')");
+		
 					mysql_query("INSERT INTO tabel_neraca(kode_rekening, nama_rekening, awal_debet) values('1','Kas', '$kas')");
 					mysql_query("INSERT INTO tabel_neraca(kode_rekening, nama_rekening, awal_debet) values('2','Bank', '$bank')");
 					mysql_query("INSERT INTO tabel_neraca(kode_rekening, nama_rekening, awal_debet) values('3','Piutang', '$piutang')");
-					
 					
 					mysql_query("INSERT INTO tabel_neraca(kode_rekening, nama_rekening) values('5','break')");
 					
@@ -96,22 +96,25 @@ if (isset($_SESSION['id_admin']))
 					
 					mysql_query("INSERT INTO tabel_neraca(kode_rekening, nama_rekening) values('8','<b>AKTIVA TETAP</b>')");
 					
-					mysql_query("INSERT INTO tabel_neraca(kode_rekening, nama_rekening, awal_debet) values('9','Gedung dan Mesin', '$gedung_mesin')");
 					
-					mysql_query("INSERT INTO tabel_neraca(kode_rekening, nama_rekening) values('10','break')");
+					mysql_query("INSERT INTO tabel_neraca(kode_rekening, nama_rekening, awal_debet) values('9','Peralatan', '$peralatan')");
 					
-					mysql_query("INSERT INTO tabel_neraca(kode_rekening, nama_rekening, awal_debet) values('11','Total Aktiva Tetap', '$aktiva_tetap')");
+					mysql_query("INSERT INTO tabel_neraca(kode_rekening, nama_rekening, awal_debet) values('10','Gedung dan Mesin', '$gedung_mesin')");
 					
-					mysql_query("INSERT INTO tabel_neraca(kode_rekening) values('12')");
+					mysql_query("INSERT INTO tabel_neraca(kode_rekening, nama_rekening) values('11','break')");
 					
-					mysql_query("INSERT INTO tabel_neraca(kode_rekening, nama_rekening) values('13','break')");
+					mysql_query("INSERT INTO tabel_neraca(kode_rekening, nama_rekening, awal_debet) values('12','Total Aktiva Tetap', '$aktiva_tetap')");
 					
-					mysql_query("INSERT INTO tabel_neraca(kode_rekening, nama_rekening, awal_debet) values('14','<b>JUMLAH AKTIVA</b>', '$jumlah_aktiva')");
+					mysql_query("INSERT INTO tabel_neraca(kode_rekening) values('13')");
+					
+					mysql_query("INSERT INTO tabel_neraca(kode_rekening, nama_rekening) values('14','break')");
+					
+					mysql_query("INSERT INTO tabel_neraca(kode_rekening, nama_rekening, awal_debet) values('15','<b>JUMLAH AKTIVA</b>', '$jumlah_aktiva')");
 					
 					$query_report = mysql_query("SELECT * FROM tabel_neraca");
 					
 					?>
-					<h3 align="left"><b>Neraca (Balance Sheet)</b></h3><br />
+					<h3 align="center"><b>Neraca (Balance Sheet)</b></h3><br />
 					<font color="#333333">Periode : <?php echo $tanggal2=$_POST['tanggal2']; ?></font>
 					<h3 align="right"><b>AKTIVA</b></h3><br />
 					<table class="datatable">
@@ -119,7 +122,7 @@ if (isset($_SESSION['id_admin']))
 					<?php
 					while($row = mysql_fetch_array($query_report)){
 						$nama_rekening  = $row['nama_rekening'];
-						$awal_debet     = number_format($row['awal_debet'],2,'.',',');
+						$awal_debet     = number_format($row['awal_debet'],0,'.',',');
 						
 						if($nama_rekening == 'break'){
 							?><tr><td colspan="2"></td></tr><?php
@@ -145,45 +148,43 @@ if (isset($_SESSION['id_admin']))
 					 //Hutang jangka pendek
 					$query_utang       = mysql_fetch_array(mysql_query("SELECT sum(sisa_kredit) AS utang FROM tabel_master WHERE kode_rekening LIKE '211%'"));
 					$query_biaya_gaji  = mysql_fetch_array(mysql_query("SELECT sum(sisa_debet) AS biaya_gaji FROM tabel_master WHERE kode_rekening = '511.01'"));
-					$query_biaya_lain2 = mysql_fetch_array(mysql_query("SELECT sum(sisa_debet) AS biaya_lain2 FROM tabel_master WHERE kode_rekening = '511.02'"));
+					$query_biaya_lain  = mysql_fetch_array(mysql_query("SELECT sum(sisa_debet) AS biaya_lain FROM tabel_master WHERE kode_rekening = '511.02'"));
+					$query_pendapatan  = mysql_fetch_array(mysql_query("SELECT sum(sisa_kredit) AS pendapatan FROM tabel_master WHERE kode_rekening = '411.01'"));
+					$query_modal       = mysql_fetch_array(mysql_query("SELECT sum(sisa_kredit) AS modal FROM tabel_master WHERE kode_rekening='313.01'"));
 					
-					$query_pendapatan   = mysql_fetch_array(mysql_query("SELECT sum(sisa_kredit) AS pendapatan FROM tabel_master WHERE kode_rekening LIKE '411%'"));
-						
-					//menghitung modal
-					$query_modal = mysql_fetch_array(mysql_query("SELECT sum(sisa_kredit) AS modal FROM tabel_master WHERE kode_rekening='313.01'"));
-					
-					//Array Query
-					$utang       = $query_utang['utang'];
-					$biaya_gaji  = $query_biaya_gaji['biaya_gaji'];
-					$biaya_lain2 = $query_biaya_lain2['biaya_lain2'];
-	
-					//Array Query
-					$modal = $query_modal['modal'];
+					//taruh di variabel
+					$utang             = $query_utang['utang'];
+					$biaya_gaji        = $query_biaya_gaji['biaya_gaji'];
+					$biaya_lain        = $query_biaya_lain['biaya_lain'];
+					$modal             = $query_modal['modal'];
 					
 					//Proses Perhitungan
-					$jumlah_biaya = $biaya_gaji + $biaya_lain2;
+					$total_biaya       = $biaya_gaji + $biaya_lain;
+					$pendapatan        = $query_pendapatan['pendapatan'];
 					
-					$pendapatan   = $query_pendapatan['pendapatan'];
+					//echo "Pendapatan : ".$pendapatan;
 					
-					$labarugi = $pendapatan - $jumlah_biaya;
+					$labarugi          = $pendapatan - $total_biaya;
 					
-					$total_pasiva = $modal + $utang + $pendapatan - $jumlah_biaya;	
+					//TOTAL PASIVA
+					$total_pasiva      = $modal + $utang + $pendapatan - $total_biaya;	
 					
 					
-					//Tahap penginputan Data
+					/*=============================================TAHAP PENG-INPUTAN DATA=======================================================*/
+					
 					mysql_query("INSERT INTO tabel_neraca(kode_rekening, nama_rekening) values('0','<b>UTANG</b>')");
 					mysql_query("INSERT INTO tabel_neraca(kode_rekening, nama_rekening, awal_debet) values('1','Utang', '$utang')");
 					
 					mysql_query("INSERT INTO tabel_neraca(kode_rekening, nama_rekening) values('2','break')");
 					
-					mysql_query("INSERT INTO tabel_neraca(kode_rekening, nama_rekening) values('3','<b>PENDAPATAN</b>')");
+					//mysql_query("INSERT INTO tabel_neraca(kode_rekening, nama_rekening) values('3','<b>PENDAPATAN</b>')");
 					
-					mysql_query("INSERT INTO tabel_neraca(kode_rekening, nama_rekening, awal_kredit) values('4','Pendapatan', '$pendapatan')");
+					//mysql_query("INSERT INTO tabel_neraca(kode_rekening, nama_rekening, awal_kredit, normal) values('4','Pendapatan', '$pendapatan', 'kredit')");
 					
-					mysql_query("INSERT INTO tabel_neraca(kode_rekening, nama_rekening) values('5','<b>BIAYA-BIAYA</b>')");
+					//mysql_query("INSERT INTO tabel_neraca(kode_rekening, nama_rekening) values('5','<b>BIAYA-BIAYA</b>')");
 					
-					mysql_query("INSERT INTO tabel_neraca(kode_rekening, nama_rekening, awal_debet) values('6','Biaya Gaji', '$biaya_gaji')");
-					mysql_query("INSERT INTO tabel_neraca(kode_rekening, nama_rekening, awal_debet) values('7','Biaya Lain-lain', '$biaya_lain2')");
+					//mysql_query("INSERT INTO tabel_neraca(kode_rekening, nama_rekening, awal_debet, normal) values('6','Biaya Gaji', '$biaya_gaji', 'debet')");
+					//mysql_query("INSERT INTO tabel_neraca(kode_rekening, nama_rekening, awal_debet, normal) values('7','Biaya Lain-lain', '$biaya_lain', 'debet')");
 
 					mysql_query("INSERT INTO tabel_neraca(kode_rekening, nama_rekening) values('8','break')");
 					
@@ -199,23 +200,29 @@ if (isset($_SESSION['id_admin']))
 					
 					mysql_query("INSERT INTO tabel_neraca(kode_rekening, nama_rekening, awal_debet) values('14','<b>JUMLAH PASIVA</b>', '$total_pasiva')");
 
-					$query_report=mysql_query("select * from tabel_neraca");
+					$query_report = mysql_query("select * from tabel_neraca");
 					
 					?>
-					<h3 align="left"><b>Neraca (Balance Sheet)</b></h3><br />
-					<font color="#333333">Periode : <?php echo $tanggal2=$_POST['tanggal2']; ?></font>
+					<h3 align="center"><b>Neraca (Balance Sheet)</b></h3><br />
+					<font color="#333333" align="center">Periode : <?php echo $tanggal2=$_POST['tanggal2']; ?></font>
 					<h3 align="right"><b>PASIVA</b></h3><br />
 					<table class="datatable">
 					<tr><th>URAIAN</th><th>NILAI</th></tr>
 					<?php
-					while($row=mysql_fetch_array($query_report)){
-						$nama_rekening=$row['nama_rekening'];
-						$awal_debet=number_format($row['awal_debet'],2,'.',',');
-						
-						if($nama_rekening=='break'){
+					while($row = mysql_fetch_array($query_report)){
+						$nama_rekening = $row['nama_rekening'];
+						//echo " Normal : ".$row['normal']." - Nilai : ".$row['awal_kredit']."<br/>";
+		
+						if($row['normal'] == 'kredit'){
+							$awal_kredit   = number_format($row['awal_kredit'],0,'.',',');
+						}else{
+							$awal_kredit   = number_format($row['awal_debet'],0,'.',',');
+						}
+
+						if($nama_rekening == 'break'){
 							?><tr><td colspan="2"></td></tr><?php
 						}else{
-							?><tr><td><?php echo $nama_rekening ?></td><td align="right"><?php echo $awal_debet;?></td></tr><?php
+							?><tr><td><?php echo $nama_rekening ?></td><td align="right"><?php echo $awal_kredit;?></td></tr><?php
 						}
 					}
 					?>
@@ -231,7 +238,7 @@ if (isset($_SESSION['id_admin']))
 			include "profil_perusahaan.php";
 
 			if($neraca=='aktiva'){
-				 aktiva();
+				aktiva();
 			}else if($neraca=='pasiva'){
 				pasiva();
 			}

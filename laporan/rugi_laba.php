@@ -12,7 +12,9 @@ if (isset($_SESSION['id_admin']))
 			<h2 align="center">
 				<strong>Rugi Laba</strong>
 			</h2>
-			<p align="center"><font color="#333333"><?php echo "Periode : ".$periode['tanggal_awal'];?></font></p>
+			<p align="center">
+				<font color="#333333"><?php echo "Periode : ".$periode['tanggal_awal'];?></font>
+			</p>
 			<p align="center">&nbsp;</p>
 			<p>
 			<table class="datatable">
@@ -23,7 +25,8 @@ if (isset($_SESSION['id_admin']))
 					<th>Pendapatan</th>
 				</tr>
 				<tr>
-					<td align="center">I.</td><td><font color="#333333">PENDAPATAN</font></td>
+					<td align="center"><strong>I.</strong></td>
+					<td><strong><font color="#333333">PENDAPATAN</font></strong></td>
 					<td></td>
 					<td></td>
 				</tr>
@@ -34,8 +37,8 @@ if (isset($_SESSION['id_admin']))
 					<tr>
 						<td align="center"><?php echo $row['kode_rekening'];?></td>
 						<td><?php echo $row['nama_rekening'];?></td>
-						<td align="right"><?php echo number_format($row['rl_debet'],2,'.',','); ?></td>
-						<td align="right"><?php echo number_format($row['rl_kredit'],2,'.',','); ?></td>
+						<td align="right"><?php echo number_format($row['rl_debet'],0,'.',','); ?></td>
+						<td align="right"><?php echo number_format($row['rl_kredit'],0,'.',','); ?></td>
 					</tr>
 				<?php
 				}
@@ -44,46 +47,33 @@ if (isset($_SESSION['id_admin']))
 					<td colspan = "4">
 				</tr>
 				<tr>
-					<td align="center">II.</td>
-					<td><font color="#333333">BIAYA-BIAYA</font></td>
-					<td></td>
-					<td></td>
-				</tr>
-				<tr>
-					<td></td>
-					<td><font color="#333333">BIAYA GAJI</font></td>
+					<td align="center"><strong>II.</strong></td>
+					<td><strong><font color="#333333">BIAYA</font></strong></td>
 					<td></td>
 					<td></td>
 				</tr>
 				<?php
 				$biaya_gaji = mysql_query("SELECT * FROM tabel_rugi_laba WHERE kode_rekening = '511.01'");
-				while($row_umum = mysql_fetch_array($biaya_gaji)){
+				while($row_biaya_gaji = mysql_fetch_array($biaya_gaji)){
 				?>
 					<tr>
-						<td align="center"><?php echo $row_umum['kode_rekening'];?></td>
-						<td><?php echo $row_umum['nama_rekening'];?></td>
-						<td align="right"><?php echo number_format($row_umum['rl_debet'],2,'.',','); ?></td>
-						<td align="right"><?php echo number_format($row_umum['rl_kredit'],2,'.',','); ?></td
+						<td align="center"><?php echo $row_biaya_gaji['kode_rekening'];?></td>
+						<td><?php echo $row_biaya_gaji['nama_rekening'];?></td>
+						<td align="right"><?php echo number_format($row_biaya_gaji['rl_debet'],0,'.',','); ?></td>
+						<td align="right"><?php echo number_format($row_biaya_gaji['rl_kredit'],0,'.',','); ?></td
 					</tr>
 				<?php
 				}
 				?>
-				
-				<tr>
-					<td></td>
-					<td><font color="#333333">BIAYA LAIN-LAIN</font></td>
-					<td></td>
-					<td></td>
-				</tr>
 				<?php
-				$biaya_lain2 = mysql_query("SELECT * FROM tabel_rugi_laba WHERE kode_rekening = '511.02'");
-				while($row_biaya1 = mysql_fetch_array($biaya_lain2)){
+				$biaya_lain = mysql_query("SELECT * FROM tabel_rugi_laba WHERE kode_rekening = '511.02'");
+				while($row_biaya_lain = mysql_fetch_array($biaya_lain)){
 				?>
 					<tr>
-						<td align="center"><?php echo $row_biaya1['kode_rekening'];?></td>
-						<td><?php echo $row_biaya1['nama_rekening'];?></td>
-						<td align="right"><?php echo number_format($row_biaya1['rl_debet'],2,'.',','); ?></td>
-						<td align="right"><?php echo number_format($row_biaya1['rl_kredit'],2,'.',','); ?></td>
+						<td align="center"><?php echo $row_biaya_lain['kode_rekening'];?></td>
+						<td><?php echo $row_biaya_lain['nama_rekening'];?></td>
+						<td align="right"><?php echo number_format($row_biaya_lain['rl_debet'],0,'.',','); ?></td>
+						<td align="right"><?php echo number_format($row_biaya_lain['rl_kredit'],0,'.',','); ?></td>
 					</tr>
 				<?php
 				}
@@ -98,8 +88,8 @@ if (isset($_SESSION['id_admin']))
 				<tr>
 					<td></td>
 					<td><font color="#333333">JUMLAH PENDAPATAN</font></td>
-					<td align="right"><?php echo number_format($pendapatan['rl_debet'],2,'.',','); ?></td>
-					<td align="right"><?php echo number_format($pendapatan['rl_kredit'],2,'.',','); ?></td>
+					<td align="right"><?php echo number_format($pendapatan['rl_debet'],0,'.',','); ?></td>
+					<td align="right"><?php echo number_format($pendapatan['rl_kredit'],0,'.',','); ?></td>
 				</tr>
 							
 				<?php
@@ -108,8 +98,8 @@ if (isset($_SESSION['id_admin']))
 				<tr>
 					<td></td>
 					<td><font color="#333333">JUMLAH BIAYA </font></td>
-					<td align="right"><?php echo number_format($jumlah_biaya['rl_debet'],2,'.',','); ?></td>
-					<td align="right"><?php echo number_format($jumlah_biaya['rl_kredit'],2,'.',','); ?></td>
+					<td align="right"><?php echo number_format($jumlah_biaya['rl_debet'],0,'.',','); ?></td>
+					<td align="right"><?php echo number_format($jumlah_biaya['rl_kredit'],0,'.',','); ?></td>
 				</tr>
 						
 				<tr>
@@ -117,13 +107,23 @@ if (isset($_SESSION['id_admin']))
 				</tr>
 				
 				<?php
-				$total_balance = mysql_fetch_array(mysql_query("SELECT * FROM tabel_rugi_laba WHERE nama_rekening ='Total Balance'"));
+				//$total_balance = mysql_fetch_array(mysql_query("SELECT * FROM tabel_rugi_laba WHERE nama_rekening ='Total Balance'"));
+				
+				$qry_cari = mysql_query("SELECT SUM(rl_debet) AS TOTRL_DEBET, SUM(rl_kredit) AS TOTRL_KREDIT FROM tabel_rugi_laba WHERE normal IN ('debet','kredit')");
+				
+				while($nilai = mysql_fetch_array($qry_cari)){
+					$jumlahPendapatan = $nilai['TOTRL_KREDIT'];
+					$jumlahBiaya = $nilai['TOTRL_DEBET'];
+				}
+		
+				$rugiAtauLaba = $jumlahPendapatan - $jumlahBiaya;
+				//echo $rugiAtauLaba;
+				$warna = $rugiAtauLaba < 0 ? "red" : "blue";
 				?>
 				<tr>
 					<td></td>
-					<td><font color="#333333">Total Balance</font></td>
-					<td align="right"><?php echo number_format($total_balance['rl_debet'],2,'.',','); ?></td>
-					<td align="right"><?php echo number_format($total_balance['rl_kredit'],2,'.',','); ?></td>
+					<td><strong><font color="#333333">LABA / RUGI</font></strong></td>
+					<td align="right" colspan="2"><strong><font color="<?=$warna;?>"><?php echo number_format($rugiAtauLaba,0,'.',','); ?></font></strong></td>
 				</tr>
 			</table>
 			

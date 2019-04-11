@@ -1,0 +1,44 @@
+===================GABUNG============
+UPDATE tabel_master SET 
+awal_debet = 0,
+awal_kredit = 0,
+mut_debet = 0,
+mut_kredit = 0,
+sisa_debet = 0,
+sisa_kredit = 0,
+rl_debet = 0,
+rl_kredit = 0,
+nrc_debet = 0,
+nrc_kredit = 0;
+
+UPDATE tabel_rugi_laba SET 
+awal_debet = 0,
+awal_kredit = 0,
+rl_debet = 0,
+rl_kredit = 0,
+mut_debet = 0,
+mut_kredit = 0,
+sisa_debet = 0,
+sisa_kredit = 0;
+
+UPDATE tabel_neraca SET 
+awal_debet = 0,
+awal_kredit = 0;
+
+
+TRUNCATE TABLE tabel_transaksi;
+
+TRUNCATE TABLE jurnal_umum;
+ALTER TABLE jurnal_umum AUTO_INCREMENT = 1;
+
+
+
+
+Posisi : RUGI_LABA, Kode Rekening : 111.01, Jumlah : 50005000Posisi : RUGI_LABA, Kode Rekening : 112.01, Jumlah : 298400000Posisi : RUGI_LABA, Kode Rekening : 113.01, Jumlah : 0Posisi : RUGI_LABA, Kode Rekening : 133.01, Jumlah : 150000000Posisi : RUGI_LABA, Kode Rekening : 511.01, Jumlah : 6000000Posisi : RUGI_LABA, Kode Rekening : 511.02, Jumlah : 795000Posisi : RUGI_LABA, Kode Rekening : 114.01, Jumlah : 4000000 
+
+
+Dalam kehidupan sehari-hari konsep sikap dapat berarti kecenderungan untuk berperilaku tertentu yang diwujudkan dengan tindakan yang dapat terlihat. Sedangkan dalam Psikologi Sosial konsep sikap mengandung arti kesiapan atau kesediaan berperilaku dari seseorang yang berhubungan dengan komponen kognitif, afektif, dan konatif. Contoh sikap dalam pengertian sehari-hari adalah seorang anggota militer yang selalu siaga, berbadan tegas, dan sering menggunakan ungkapan "siap!,...","..mohon izin, komandan.." menunjukkan sikap seorang anggota militer. Adapun contoh sikap dalam psikologi adalah seseorang yang bersikap apatis terhadap segala hal yang berhubungan dengan agama setelah menyaksikan dari media pertikaian yang melibatkan sebuah ormas keagamaan.
+
+Komponen sikap adalah : komponen kognitif, afektif, dan konatif. Contoh komponen kognitif : pengetahuan yang terbatas terhadap FPI membuat masyarakat umum menilai ormas ini sebagai ormas radikal dan "ganas" hanya karena sering melakukan sweeping tempat maksiat secara frontal. Contoh komponen afektif : tertangkapnya pelaku koruptor yang berasal dari partai yang selama ini dekat dengan citra agamis menunjukkan tampilan/citra tidak dapat menjadi ukuran integritas seseorang. Contoh komponen konatif : seorang programer komputer akan cenderung berpikir dan bertindak secara logis dalam menyelesaikan masalah karena dalam kesehariannya ia banyak bergelut dengan kode komputer yang bersifat logis.
+
+Menurut saya, hal tersebut belum tentu menggambarkan tingkat elektabilitas yang sebenarnya. Banyak faktor yang mempengaruhi pilihan masyarakat saat mengikuti jajak pendapat. Tingkat pendidikan, latar belakang, keadaan lingkungan tentu dapat mempengaruhi pilihan dalam mengisi jajak perndapat. Termasuk di dalamnya komponen-komponen dari sikap yaitu komponen kognitif, afektif, dan konatif.

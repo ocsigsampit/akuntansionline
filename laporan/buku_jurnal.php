@@ -2,8 +2,8 @@
 
 if (isset($_SESSION['id_admin']))
 {	
-	$query_tanggal=mysql_fetch_array(mysql_query("select min(tanggal_posting) as tanggal_pertama from tabel_transaksi"));
-	$tanggal_pertama=$query_tanggal['tanggal_pertama'];
+	$query_tanggal   = mysql_fetch_array(mysql_query("SELECT MIN(tanggal_posting) AS tanggal_pertama FROM tabel_transaksi"));
+	$tanggal_pertama = $query_tanggal['tanggal_pertama'];
 ?>
 
 	<div class="post">
@@ -33,16 +33,17 @@ if (isset($_SESSION['id_admin']))
 			if(isset($_POST['report'])){
 				
 				//tanggal periode laporan
-				$tanggal1=$_POST['tanggal1'];
-				$tanggal2=$_POST['tanggal2'];
+				$tanggal1 = $_POST['tanggal1'];
+				$tanggal2 = $_POST['tanggal2'];
 				
-				$query_transaksi=mysql_query("select * from tabel_transaksi where tanggal_transaksi between '$tanggal1' and '$tanggal2' order by tanggal_transaksi asc");
-				$total=mysql_fetch_array(mysql_query("select sum(debet) as tot_debet, sum(kredit) as tot_kredit from tabel_transaksi where tanggal_transaksi between '$tanggal1' and '$tanggal2' order by kode_rekening asc"));
+				$query_transaksi = mysql_query("SELECT * FROM tabel_transaksi WHERE tanggal_transaksi BETWEEN '$tanggal1' AND '$tanggal2' ORDER BY tanggal_transaksi ASC");
+				
+				$total           = mysql_fetch_array(mysql_query("SELECT SUM(debet) AS tot_debet, SUM(kredit) AS tot_kredit FROM tabel_transaksi WHERE tanggal_transaksi BETWEEN '$tanggal1' AND '$tanggal2' ORDER BY kode_rekening ASC"));
 	
 			}else{
 			
-				$query_transaksi=mysql_query("select * from tabel_transaksi order by tanggal_transaksi asc");
-				$total=mysql_fetch_array(mysql_query("select sum(debet) as tot_debet, sum(kredit) as tot_kredit from tabel_transaksi order by kode_rekening asc"));
+				$query_transaksi = mysql_query("SELECT * FROM tabel_transaksi ORDER BY tanggal_transaksi ASC");
+				$total           = mysql_fetch_array(mysql_query("SELECT SUM(debet) AS tot_debet, SUM(kredit) AS tot_kredit FROM tabel_transaksi ORDER BY kode_rekening ASC"));
 			
 				unset($_POST['report']);
 			}
@@ -62,9 +63,9 @@ if (isset($_SESSION['id_admin']))
 			</tr>
 			<?php
 			
-			while($row_tran=mysql_fetch_array($query_transaksi)){
-				$debet=$row_tran['debet'];
-				$kredit=$row_tran['kredit'];
+			while($row_tran = mysql_fetch_array($query_transaksi)){
+				$debet  = $row_tran['debet'];
+				$kredit = $row_tran['kredit'];
 				
 				?>
 				<tr>
@@ -72,16 +73,16 @@ if (isset($_SESSION['id_admin']))
 					<td><div align="center"><?php echo $row_tran['kode_transaksi'];?></div></td>
 					<td><div align="center"><?php echo $row_tran['kode_rekening'];?></div></td>
 					<td><?php echo $row_tran['keterangan_transaksi'];?></td>
-					<td align="right"><?php echo number_format($debet,2,'.',','); ?></td>
-					<td align="right"><?php echo number_format($kredit,2,'.',','); ?></td>
+					<td align="right"><?php echo number_format($debet,0,'.',','); ?></td>
+					<td align="right"><?php echo number_format($kredit,0,'.',','); ?></td>
 				</tr>
 				<?php
 			}
 			?>
 			<tr>
 				<td colspan="4"><div align="center"><strong>TOTAL TRANSAKSI</strong></div></td>
-				<td align="right"><strong><?php echo number_format($total['tot_debet'],2,'.',','); ?></strong></td>
-				<td align="right"><strong><?php echo number_format($total['tot_kredit'],2,'.',','); ?></strong></td>
+				<td align="right"><strong><?php echo number_format($total['tot_debet'],0,'.',','); ?></strong></td>
+				<td align="right"><strong><?php echo number_format($total['tot_kredit'],0,'.',','); ?></strong></td>
 			</tr>
 			</table>
 

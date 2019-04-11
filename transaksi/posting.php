@@ -51,7 +51,7 @@ if (isset($_SESSION['id_admin']))
 						<td width = "72" align="center">
 						<!---untuk mengakhiri posting dan memberi tanda posting-->
 						<?php
-						
+						//Cari transaksi yang belum berstatus 'Posting"
 						$cek = mysql_query("SELECT * FROM tabel_transaksi WHERE keterangan_posting =''");
 						$cek_posting = mysql_num_rows($cek);
 						if($cek_posting !== 0){
@@ -101,6 +101,7 @@ if (isset($_SESSION['id_admin']))
 			
 				$normal        = $row_hit_sisa['normal'];
 				$kode_rekening = $row_hit_sisa['kode_rekening'];
+				$posisi		   = $row_hit_sisa['posisi'];
 				
 				$awal_debet    = $row_hit_sisa['awal_debet'];
 				$awal_kredit   = $row_hit_sisa['awal_kredit'];
@@ -114,38 +115,69 @@ if (isset($_SESSION['id_admin']))
 					
 					if($hitung_sisa_debet < 0){
 						$positif_sisa_kredit = abs($hitung_sisa_debet);
-						$update_mutasi = mysql_query("UPDATE tabel_master SET sisa_debet = 0, sisa_kredit='".$positif_sisa_kredit."' WHERE kode_rekening='".$kode_rekening."'");
+						$update_mutasi       = mysql_query("UPDATE tabel_master SET sisa_debet = 0, sisa_kredit='".$positif_sisa_kredit."' WHERE kode_rekening='".$kode_rekening."'");
+						
+						if($posisi = 'rugi-laba'){
+							//echo "Posisi : RUGI_LABA, Kode Rekening : ".$kode_rekening.", Jumlah : ".$positif_sisa_kredit;
+							
+							$update_rl = mysql_query("UPDATE tabel_rugi_laba SET rl_debet = '".$positif_sisa_kredit."' WHERE kode_rekening='".$kode_rekening."'");
+						}
+						
 					}else{
-						$update_mutasi = mysql_query("UPDATE tabel_master SET sisa_debet = '".$hitung_sisa_debet."', sisa_kredit = '0' WHERE kode_rekening='".$kode_rekening."'");
-					}	
+						$update_mutasi       = mysql_query("UPDATE tabel_master SET sisa_debet = '".$hitung_sisa_debet."', sisa_kredit = '0' WHERE kode_rekening='".$kode_rekening."'");
+						if($posisi = 'rugi-laba'){
+							//echo "Posisi : RUGI_LABA, Kode Rekening : ".$kode_rekening.", Jumlah : ".$hitung_sisa_debet;
+							
+							$update_rl = mysql_query("UPDATE tabel_rugi_laba SET rl_debet = '".$hitung_sisa_debet."' WHERE kode_rekening='".$kode_rekening."'");
+						}
+					}
+					
+					$cari_total_biaya   = mysql_query("SELECT SUM(rl_debet) AS X FROM tabel_rugi_laba WHERE normal = 'debet'");
+					while($nilai = mysql_fetch_array($cari_total_biaya)){
+						$theNilai = $nilai['X'];
+					}
+					mysql_query("UPDATE tabel_rugi_laba SET rl_debet = '".$theNilai."' WHERE nama_rekening = 'JUMLAH BIAYA'");
 								
 				}
 				
 				if($normal == "kredit"){
-					$hitung_sisa_kredit = ($awal_kredit - $mutasi_debet) + $mutasi_kredit;
+					$hitung_sisa_kredit = ($awal_kredit + $mutasi_kredit) - $mutasi_debet;
 					
 					if($hitung_sisa_kredit < 0){
 						$positif_sisa_debet = abs($hitung_sisa_kredit);
-						$update_mutasi = mysql_query("UPDATE tabel_master SET sisa_debet='".$positif_sisa_debet."', sisa_kredit ='0' WHERE kode_rekening='".$kode_rekening."'");
+						$update_mutasi      = mysql_query("UPDATE tabel_master SET sisa_debet='".$positif_sisa_debet."', sisa_kredit ='0' WHERE kode_rekening='".$kode_rekening."'");
+						
+						if($posisi = 'rugi-laba'){
+							//echo "Posisi : RUGI_LABA, Kode Rekening : ".$kode_rekening.", Jumlah : ".$positif_sisa_debet;
+							
+							$update_rl = mysql_query("UPDATE tabel_rugi_laba SET rl_kredit = '".$positif_sisa_debet."' WHERE kode_rekening='".$kode_rekening."'");
+							
+						}
 					}else{
-						$update_mutasi = mysql_query("UPDATE tabel_master SET sisa_debet = 0, sisa_kredit='".$hitung_sisa_kredit."' WHERE kode_rekening='".$kode_rekening."'");
-					}		
+						$update_mutasi      = mysql_query("UPDATE tabel_master SET sisa_debet = 0, sisa_kredit='".$hitung_sisa_kredit."' WHERE kode_rekening='".$kode_rekening."'");
+						
+						if($posisi = 'rugi-laba'){
+							//echo "Posisi : RUGI_LABA, Kode Rekening : ".$kode_rekening.", Jumlah : ".$positif_sisa_debet;
+							
+							$update_rl = mysql_query("UPDATE tabel_rugi_laba SET rl_kredit = '".$hitung_sisa_kredit."' WHERE kode_rekening='".$kode_rekening."'");
+						}
+					}
+	
+					$cari_total_pendapatan   = mysql_query("SELECT SUM(rl_kredit) AS X FROM tabel_rugi_laba WHERE normal = 'kredit'");
+					while($nilai = mysql_fetch_array($cari_total_pendapatan)){
+						$theNilai = $nilai['X'];
+					}
+					
+					$nilai_total_pendapatan = 
+					mysql_query("UPDATE tabel_rugi_laba SET rl_kredit = '".$theNilai."' WHERE nama_rekening = 'JUMLAH PENDAPATAN'");	
 				}
 			}
 		}
-		
+				
 		
 		////////////////////////// UBAH STATUS POSTING //////////////////////////////
 		$selesai = mysql_query("UPDATE tabel_transaksi SET tanggal_posting ='".$tanggal."', keterangan_posting = 'Post' WHERE keterangan_posting =''");
 		
-		/* GA USAH DIPAKE
-		if($selesai){
-			?><script language="javascript">document.location.href="?<?php echo paramEncrypt('page=./transaksi/posting&status=Proses Posting Selesai')?>"</script><?php
-		}else{
-			echo mysql_error();
-		} 
-		*/
-							
 	}else{
 		unset($_POST['posting']);
 	}
